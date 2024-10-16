@@ -18,7 +18,7 @@ class NeuralNetwork:
         clone.weights2 = np.copy(self.weights2)
         return clone
 
-    def mutate(self, mutation_rate=0.01):
+    def mutate(self, mutation_rate=0.05):
         mutation_mask1 = np.random.randn(*self.weights1.shape) * mutation_rate
         mutation_mask2 = np.random.randn(*self.weights2.shape) * mutation_rate
         self.weights1 += mutation_mask1
@@ -38,7 +38,7 @@ class GeneticAlgorithm:
         new_generation = []
         for top_network in top_networks:
             #add top two birds to next gen
-            top_networks.append(top_network)
+            new_generation.append(top_network)
             #clone the top birds 4 times and mutate the clones
             for _ in range(4):
                 cloned_network = top_network.clone()
@@ -52,7 +52,7 @@ class GeneticAlgorithm:
 import flappy_bird_gymnasium
 import gymnasium
 
-env = gymnasium.make("FlappyBird-v0", render_mode="human", use_lidar=True)
+env = gymnasium.make("FlappyBird-v0", render_mode="human", use_lidar=False)
 
 #genetic algorithm parameters
 population_size = 10
@@ -64,7 +64,7 @@ output_size = 1
 genetic_algo = GeneticAlgorithm(population_size, input_size, hidden_size, output_size)
 
 #run through the game for each neural network in the population
-for generation in range(10):  # number of generations
+for generation in range(100):  # number of generations
     fitness_scores = []
     
     for network in genetic_algo.networks:
