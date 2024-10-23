@@ -6,7 +6,7 @@ import pickle
 # Define parameters for the exponential decay
 start_value = 0.3
 end_value = 0.01
-size = 10000
+size = 50000
 
 # Calculate the exponential decay factor
 decay_factor = (end_value / start_value) ** (1 / (size - 1))
@@ -93,6 +93,7 @@ hidden_size = 8
 output_size = 1
 
 def flappy_bird_default():
+    env = gymnasium.make("FlappyBird-v0", render_mode=None, use_lidar=False)
     #initial population
     genetic_algo = GeneticAlgorithm(population_size, input_size, hidden_size, output_size)
 
@@ -127,14 +128,15 @@ def flappy_bird_default():
         
         #create new generation of birds
         genetic_algo.evolve(fitness_scores, generation)
-        print(f"Best score in generation {generation}: {best_score}")
-        if best_score > 100:
+        print(f"___________________________________________ Best score in generation {generation}: {best_score}")
+        if generation == size - 1 or best_score > 2500:
             top_5_indices = np.argsort(fitness_scores)[-5:]
             final_network = [genetic_algo.networks[i] for i in top_5_indices]
             # Open a file in binary write mode
             with open("BestNeural.pkl", "wb") as f:
                 # Save the list of top 5 networks
                 pickle.dump(final_network, f)
+            break
     print(f"Best score: {best_score}")
 
     # Play the game with the best bird
@@ -183,4 +185,4 @@ def play_game_with_networks():
             if terminated:
                 break
     env.close()
-play_game_with_networks()
+flappy_bird_default()
