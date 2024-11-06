@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import gymnasium # type: ignore
+from game import NeuralNetwork
 
 def assess_trained_networks(pickle_filename, runs_per_network=10):
     with open(pickle_filename, "rb") as f:
@@ -12,10 +13,13 @@ def assess_trained_networks(pickle_filename, runs_per_network=10):
     total_fitness = []
 
     for network in loaded_networks:
+        print(f'network {network}')
         scores = []
         fitness_values = []
         
         for _ in range(runs_per_network):
+            if _ % 10 == 0:
+                print(f'run {_}')
             obs, _ = env.reset()
             score = 0
             total_reward = 0
@@ -52,5 +56,5 @@ def assess_trained_networks(pickle_filename, runs_per_network=10):
     print(f"Overall average fitness: {overall_avg_fitness}")
     return overall_avg_score, overall_avg_fitness
 
-
-assess_trained_networks(".pkl", runs_per_network=100)
+if __name__ == "__main__":
+    assess_trained_networks("BestNeural-918Score.pkl", runs_per_network=100)
