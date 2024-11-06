@@ -197,4 +197,5 @@ def play_game_with_networks():
             if terminated:
                 break
     env.close()
-play_game_with_networks()
+if __name__ == "__main__":
+    flappy_bird_default()
