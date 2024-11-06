@@ -4,7 +4,7 @@ import pickle
 
 # Global variables
 # Define parameters for the exponential decay
-start_value = 0.3
+start_value = 0.35
 end_value = 0.01
 size = 50000
 
@@ -14,6 +14,8 @@ decay_factor = (end_value / start_value) ** (1 / (size - 1))
 # Generate the array with exponentially decaying values
 exp_decay_array = [start_value * (decay_factor ** i) for i in range(size)]
 
+# Random restarts
+# cleverer strategies for mutation, find a way such that initial canidates are close to eachother
 class NeuralNetwork:
     def __init__(self, input_size, hidden_size, output_size):
         self.weights1 = np.random.randn(input_size, hidden_size)
@@ -49,6 +51,7 @@ class NeuralNetwork:
 
         return child
 
+# Implement with 180 lidar inputs
 class GeneticAlgorithm:
     def __init__(self, population_size, input_size, hidden_size, output_size):
         self.population_size = population_size
@@ -70,9 +73,9 @@ class GeneticAlgorithm:
             print(f"Crossover between parent1 and parent2 in generation {generation}")
             child = parent1.crossover(parent2)
             
-            # Simulated Annealing: Mutate with a chance and decreasing rate
             if random.random() < 0.9:  # 90% chance to mutate
                 print(f"Mutating child in generation {generation}")
+                # Simulated Annealing: Mutate with a chance and decreasing rate
                 child.mutate(mutation_rate=exp_decay_array[generation])
 
             new_generation.append(child)
@@ -99,6 +102,7 @@ def flappy_bird_default():
 
     best_score = -1
     final_network = None
+    restart_counter = 0
 
     #run through the game for each neural network in the population
     for generation in range(size):  # number of generations
@@ -129,13 +133,21 @@ def flappy_bird_default():
         #create new generation of birds
         genetic_algo.evolve(fitness_scores, generation)
         print(f"___________________________________________ Best score in generation {generation}: {best_score}")
+
+        if best_score < 70:
+            restart_counter += 1
+            if restart_counter >= 550:
+                print(f"Restarting generation since sufficient score as not been reached")
+                # restart the game if desired score is not reached in 550 generations
+                return flappy_bird_default()
+
         if generation == size - 1 or best_score > 2500:
-            top_5_indices = np.argsort(fitness_scores)[-5:]
-            final_network = [genetic_algo.networks[i] for i in top_5_indices]
+            # top_5_indices = np.argsort(fitness_scores)[-5:]
+            # final_network = [genetic_algo.networks[i] for i in top_5_indices]
             # Open a file in binary write mode
-            with open("BestNeural.pkl", "wb") as f:
+            with open("./Flappy-Networks/BestNeural.pkl", "wb") as f:
                 # Save the list of top 5 networks
-                pickle.dump(final_network, f)
+                pickle.dump(genetic_algo.networks, f)
             break
     print(f"Best score: {best_score}")
 
@@ -166,7 +178,7 @@ def flappy_bird_default():
 # Play the game using the loaded networks
 def play_game_with_networks():
     loaded_networks = None
-    with open("BestNeural-103Score.pkl", "rb") as f:
+    with open("./Flappy-Networks/BestNeural-3298Score.pkl", "rb") as f:
         loaded_networks = pickle.load(f)
     # Play the game with the best bird
     env = gymnasium.make("FlappyBird-v0", render_mode="human", use_lidar=False)
@@ -185,4 +197,4 @@ def play_game_with_networks():
             if terminated:
                 break
     env.close()
-flappy_bird_default()
+play_game_with_networks()
