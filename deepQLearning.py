@@ -13,10 +13,10 @@ env = gymnasium.make('FlappyBird-v0', render_mode=None, use_lidar=False)
 # Hyperparameters
 learning_rate = 0.001
 discount_factor = 0.99
-epsilon = 0.009
+epsilon = 0.0075
 epsilon_decay = 0.9995
 epsilon_min = 0.0001
-batch_size = 128
+batch_size = 64
 memory_size = 50000
 target_update_frequency = 10  # Update target network every 100 episodes
 num_episodes = 10000
@@ -114,8 +114,8 @@ def train(epsilon):
             replay()
 
         # Save the trained model
-        if score >= 50:
-            torch.save(policy_net.state_dict(), "flappybird_dqn_model.pth")
+        if score >= 100:
+            torch.save(policy_net.state_dict(), "flappybird_dqn_model_100_1.pth")
             break
         
         # Decay epsilon
@@ -138,7 +138,7 @@ def play_trained_model():
     trained_model = DQN(state_size, action_size)
 
     # Load the saved weights
-    trained_model.load_state_dict(torch.load("flappybird_dqn_model.pth"))
+    trained_model.load_state_dict(torch.load("flappybird_dqn_model_100_1.pth"))
     trained_model.eval()  # Set the model to evaluation mode
 
     state, _ = env.reset()
