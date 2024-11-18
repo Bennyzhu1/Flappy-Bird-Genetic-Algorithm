@@ -70,11 +70,9 @@ class GeneticAlgorithm:
         while len(new_generation) < self.population_size:
             # Perform crossover between two random birds from the top 5
             parent1, parent2 = random.choices(top_networks, k=2)
-            print(f"Crossover between parent1 and parent2 in generation {generation}")
             child = parent1.crossover(parent2)
             
             if random.random() < 0.9:  # 90% chance to mutate
-                print(f"Mutating child in generation {generation}")
                 # Simulated Annealing: Mutate with a chance and decreasing rate
                 child.mutate(mutation_rate=exp_decay_array[generation])
 
@@ -100,6 +98,13 @@ def flappy_bird_default():
     #initial population
     genetic_algo = GeneticAlgorithm(population_size, input_size, hidden_size, output_size)
 
+    # Load the best neural network from a file, a "pick up where we left off"
+    # _________ Comment out if you want to initialize a population from scratch __________
+    with open("./Flappy-Networks/BestNeural-3298Score.pkl", "rb") as f:
+        loaded_networks = pickle.load(f)
+    genetic_algo.networks = loaded_networks
+    # ____________________________________________________________________________________
+
     best_score = -1
     final_network = None
     restart_counter = 0
@@ -108,7 +113,8 @@ def flappy_bird_default():
     for generation in range(size):  # number of generations
         fitness_scores = []
         print(f"Generation {generation}")
-        
+        generational_best_score = -1
+
         for network in genetic_algo.networks:
             score = 0
             obs, _ = env.reset()
@@ -123,32 +129,39 @@ def flappy_bird_default():
                 total_reward += reward
                 if reward == 1:
                     score += 1
+
+                if score > generational_best_score:
+                    generational_best_score = score
+
                 if terminated:
                     break
-            if score > best_score:
-                best_score = score
-        
             fitness_scores.append(total_reward)
-        
+
+        if generational_best_score > best_score:
+            best_score = generational_best_score
+            print(f"New best score found in generation {generation}: {best_score}")
+            with open(f"./Temp-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
+                # Save the list of top 5 networks
+                pickle.dump(genetic_algo.networks, f)
+        else:
+            print(f"High score in generation {generation}: {generational_best_score}")
         #create new generation of birds
         genetic_algo.evolve(fitness_scores, generation)
-        print(f"___________________________________________ Best score in generation {generation}: {best_score}")
 
-        if best_score < 70:
+        if best_score < 50:
             restart_counter += 1
-            if restart_counter >= 550:
+            if restart_counter >= 1000:
                 print(f"Restarting generation since sufficient score as not been reached")
                 # restart the game if desired score is not reached in 550 generations
                 return flappy_bird_default()
 
-        if generation == size - 1 or best_score > 2500:
+        if generation % 50 == 0:
             # top_5_indices = np.argsort(fitness_scores)[-5:]
             # final_network = [genetic_algo.networks[i] for i in top_5_indices]
             # Open a file in binary write mode
-            with open("./Flappy-Networks/BestNeural.pkl", "wb") as f:
+            with open(f"./Temp-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
                 # Save the list of top 5 networks
                 pickle.dump(genetic_algo.networks, f)
-            break
     print(f"Best score: {best_score}")
 
     # Play the game with the best bird
@@ -178,11 +191,12 @@ def flappy_bird_default():
 # Play the game using the loaded networks
 def play_game_with_networks():
     loaded_networks = None
-    with open("./Flappy-Networks/BestNeural-3298Score.pkl", "rb") as f:
+    with open("./Flappy-Networks/BestNeural-30947Score.pkl", "rb") as f:
         loaded_networks = pickle.load(f)
+    top_5_networks = [loaded_networks[13], loaded_networks[2], loaded_networks[0], loaded_networks[33], loaded_networks[47]]
     # Play the game with the best bird
     env = gymnasium.make("FlappyBird-v0", render_mode="human", use_lidar=False)
-    for network in loaded_networks:
+    for network in top_5_networks:
         obs, _ = env.reset()
         total_reward = 0
         
@@ -196,6 +210,8 @@ def play_game_with_networks():
 
             if terminated:
                 break
+        index += 1
     env.close()
 if __name__ == "__main__":
-    flappy_bird_default()
+    play_game_with_networks()
+    #flappy_bird_default()
