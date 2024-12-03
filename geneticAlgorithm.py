@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import pickle
+import argparse
 
 # Global variables
 # Define parameters for the exponential decay
@@ -200,7 +201,6 @@ def play_game_with_networks():
         obs, _ = env.reset()
         total_reward = 0
         
-        # Maybe manually give a reward where, if they die, see how close they are to the next pipes opening hole, and give a reward based on that
         while True:
             action_prob = network.forward(obs)
             action = 1 if action_prob > 0 else 0
@@ -212,6 +212,13 @@ def play_game_with_networks():
                 break
         index += 1
     env.close()
+
 if __name__ == "__main__":
-    play_game_with_networks()
-    #flappy_bird_default()
+    parser = argparse.ArgumentParser(description="Run Flappy Bird Genetic Algorithm.")
+    parser.add_argument("--play", action="store_true", help="Play the pre-trained model.")
+    args = parser.parse_args()
+
+    if args.play:
+        play_game_with_networks()  # Call the play function if --play flag is set
+    else:
+        flappy_bird_default()

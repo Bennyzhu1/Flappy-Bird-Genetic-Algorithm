@@ -105,7 +105,7 @@ def train(epsilon):
 
         # Save the trained model
         if score >= 100:
-            torch.save(policy_net.state_dict(), "flappybird_dqn_model_100_1.pth")
+            torch.save(policy_net.state_dict(), "Flappy-Networks/flappybird_dqn_model_100_1.pth")
             break
         
         # Decay epsilon
@@ -118,14 +118,12 @@ def train(epsilon):
 
         print(f"Episode {episode + 1}, Score: {score}, Total Reward: {total_reward}, Epsilon: {epsilon}")
 
-
-
-def play_trained_model():
+def test_trained_model():
     env = gymnasium.make('FlappyBird-v0', render_mode=None, use_lidar=False)
 
     trained_model = DQN(state_size, action_size)
 
-    trained_model.load_state_dict(torch.load("flappybird_dqn_model_100_1.pth"))
+    trained_model.load_state_dict(torch.load("Flappy-Networks/flappybird_dqn_model_100.pth"))
     trained_model.eval()  
 
     total_score = 0
@@ -153,6 +151,37 @@ def play_trained_model():
 
     print("Finished playing, average score: ", total_score/100)
     env.close()
+    
+def play_trained_model():
+    env = gymnasium.make('FlappyBird-v0', render_mode="human", use_lidar=False)
 
-train(epsilon)
-play_trained_model()
+    trained_model = DQN(state_size, action_size)
+    trained_model.load_state_dict(torch.load("Flappy-Networks/flappybird_dqn_model_100.pth"))
+
+    for episode in range(5):
+        state, _ = env.reset()
+        done = False
+
+        while not done:
+            state_tensor = torch.FloatTensor(state).unsqueeze(0)
+            with torch.no_grad():
+                action = trained_model(state_tensor).argmax().item()  
+            
+            next_state, _, done, _, _ = env.step(action)
+            
+            state = next_state
+
+    env.close()
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Run Flappy Bird DQN.")
+    parser.add_argument("--play", action="store_true", help="Play the pre-trained model.")
+    args = parser.parse_args()
+
+    if args.play:
+        play_trained_model()  # Call the play function if --play flag is set
+    else:
+        train(epsilon)
+        test_trained_model()  # Train if --play is not set
