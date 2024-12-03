@@ -79,4 +79,5 @@ This project utilizes the `flappy-bird-gymnasium` environment, for which we expr
 
 ## Resources
 This project leverages `gymnasium`: [https://gymnasium.farama.org/](https://gymnasium.farama.org/)
+
 Website for Flappybirdgym the environment we used: [https://pypi.org/project/flappy-bird-gymnasium/](https://pypi.org/project/flappy-bird-gymnasium/)
