@@ -55,7 +55,7 @@ We've included a Makefile to simplify running the pre-trained models, to run our
 
 3. Run whichever model you want to see:
    
-   Genetic (*If you want to train a model from scratch, comment out lines 104-106, and if not insert the path to the file you want to continue from*):
+   Genetic:
    ```bash
    make genetic  # Runs the pre-trained genetic algorithm
    OR
@@ -73,7 +73,7 @@ We've included a Makefile to simplify running the pre-trained models, to run our
 
 ### Genetic Algorithm
 
-The genetic algorithm trains a population of neural networks.  The best-performing networks are selected for reproduction through crossover and mutation. The mutation rate decreases over generations using an exponential decay schedule.  The saved `.pkl` files in the `Flappy-Networks/` directory contain the weights of these evolved networks.
+The genetic algorithm trains a population of neural networks.  The best-performing networks are selected for reproduction through crossover and mutation. The mutation rate decreases over generations using an exponential decay schedule.  The saved `.pkl` files in the `Flappy-Networks/` directory contain the weights of these evolved networks. (*If you want to train a model from scratch, comment out lines 104-106, and if not insert the path to the file you want to continue from*)
 
 ### Deep Q-Learning
 
