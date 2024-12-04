@@ -62,7 +62,7 @@ We've included a Makefile to simplify running the pre-trained models, to run our
    python3 geneticAlgorithm.py
    ```
 
-   DeepQN
+   DeepQN:
    ```bash
    make dqn      # Runs the pre-trained Q-learning model
    OR
