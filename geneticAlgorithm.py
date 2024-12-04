@@ -7,7 +7,7 @@ import argparse
 # Define parameters for the exponential decay
 start_value = 0.35
 end_value = 0.01
-size = 50000
+size = 10000
 
 # Calculate the exponential decay factor
 decay_factor = (end_value / start_value) ** (1 / (size - 1))
@@ -52,7 +52,7 @@ class NeuralNetwork:
 
         return child
 
-# Implement with 180 lidar inputs
+# Future Work: Implement with 180 lidar inputs
 class GeneticAlgorithm:
     def __init__(self, population_size, input_size, hidden_size, output_size):
         self.population_size = population_size
@@ -107,7 +107,6 @@ def flappy_bird_default():
     # ____________________________________________________________________________________
 
     best_score = -1
-    final_network = None
     restart_counter = 0
 
     #run through the game for each neural network in the population
@@ -121,7 +120,6 @@ def flappy_bird_default():
             obs, _ = env.reset()
             total_reward = 0
             
-            # Maybe manually give a reward where, if they die, see how close they are to the next pipes opening hole, and give a reward based on that
             while True:
                 action_prob = network.forward(obs)
                 action = 1 if action_prob > 0 else 0
@@ -142,7 +140,7 @@ def flappy_bird_default():
             best_score = generational_best_score
             print(f"New best score found in generation {generation}: {best_score}")
             with open(f"./Temp-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
-                # Save the list of top 5 networks
+                # Save the list of the whole generation
                 pickle.dump(genetic_algo.networks, f)
         else:
             print(f"High score in generation {generation}: {generational_best_score}")
@@ -157,17 +155,14 @@ def flappy_bird_default():
                 return flappy_bird_default()
 
         if generation % 50 == 0:
-            # top_5_indices = np.argsort(fitness_scores)[-5:]
-            # final_network = [genetic_algo.networks[i] for i in top_5_indices]
-            # Open a file in binary write mode
             with open(f"./Temp-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
                 # Save the list of top 5 networks
                 pickle.dump(genetic_algo.networks, f)
     print(f"Best score: {best_score}")
 
-    # Play the game with the best bird
+    # Play the game with the last generation of birds
     env = gymnasium.make("FlappyBird-v0", render_mode="human", use_lidar=False)
-    for network in final_network:
+    for network in genetic_algo.networks:
         score = 0
         obs, _ = env.reset()
         total_reward = 0
@@ -210,7 +205,6 @@ def play_game_with_networks():
 
             if terminated:
                 break
-        index += 1
     env.close()
 
 if __name__ == "__main__":

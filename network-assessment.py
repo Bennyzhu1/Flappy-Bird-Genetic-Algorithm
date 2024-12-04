@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 import gymnasium # type: ignore
-from game import NeuralNetwork
+from geneticAlgorithm import NeuralNetwork
 
 def assess_trained_networks(pickle_filename, runs_per_network=10):
     with open(pickle_filename, "rb") as f:
