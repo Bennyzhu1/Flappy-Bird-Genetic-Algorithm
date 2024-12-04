@@ -188,7 +188,8 @@ def play_game_with_networks():
     loaded_networks = None
     with open("./Flappy-Networks/BestNeural-30947Score.pkl", "rb") as f:
         loaded_networks = pickle.load(f)
-    top_5_networks = [loaded_networks[13], loaded_networks[2], loaded_networks[0], loaded_networks[33], loaded_networks[47]]
+    # Fill in if you want to load in your top 5 networkd, and replace the indexs
+    # top_5_networks = [loaded_networks[13], loaded_networks[2], loaded_networks[0], loaded_networks[33], loaded_networks[47]]
     # Play the game with the best bird
     env = gymnasium.make("FlappyBird-v0", render_mode="human", use_lidar=False)
     for network in top_5_networks:
