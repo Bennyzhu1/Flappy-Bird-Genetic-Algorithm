@@ -55,7 +55,7 @@ We've included a Makefile to simplify running the pre-trained models, to run our
 
 3. Run whichever model you want to see:
    
-   Genetic:
+   Genetic (*If you want to train a model from scratch, comment out lines 104-106, and if not insert the path to the file you want to continue from*):
    ```bash
    make genetic  # Runs the pre-trained genetic algorithm
    OR
