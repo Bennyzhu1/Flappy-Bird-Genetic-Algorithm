@@ -192,7 +192,7 @@ def play_game_with_networks():
     # top_5_networks = [loaded_networks[13], loaded_networks[2], loaded_networks[0], loaded_networks[33], loaded_networks[47]]
     # Play the game with the best bird
     env = gymnasium.make("FlappyBird-v0", render_mode="human", use_lidar=False)
-    for network in top_5_networks:
+    for network in loaded_networks:
         obs, _ = env.reset()
         total_reward = 0
         
