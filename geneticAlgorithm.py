@@ -101,9 +101,9 @@ def flappy_bird_default():
 
     # Load the best neural network from a file, a "pick up where we left off"
     # _________ Comment out if you want to initialize a population from scratch __________
-    with open("./Flappy-Networks/BestNeural-3298Score.pkl", "rb") as f:
-        loaded_networks = pickle.load(f)
-    genetic_algo.networks = loaded_networks
+    # with open("./Flappy-Networks/BestNeural-3298Score.pkl", "rb") as f:
+    #     loaded_networks = pickle.load(f)
+    # genetic_algo.networks = loaded_networks
     # ____________________________________________________________________________________
 
     best_score = -1
@@ -151,7 +151,6 @@ def flappy_bird_default():
             restart_counter += 1
             if restart_counter >= 1000:
                 print(f"Restarting generation since sufficient score as not been reached")
-                # restart the game if desired score is not reached in 550 generations
                 return flappy_bird_default()
 
         if generation % 50 == 0:
