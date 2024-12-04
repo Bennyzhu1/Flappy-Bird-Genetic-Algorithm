@@ -139,7 +139,7 @@ def flappy_bird_default():
         if generational_best_score > best_score:
             best_score = generational_best_score
             print(f"New best score found in generation {generation}: {best_score}")
-            with open(f"./Temp-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
+            with open(f"./Flappy-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
                 # Save the list of the whole generation
                 pickle.dump(genetic_algo.networks, f)
         else:
@@ -154,7 +154,7 @@ def flappy_bird_default():
                 return flappy_bird_default()
 
         if generation % 50 == 0:
-            with open(f"./Temp-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
+            with open(f"./Flappy-Networks/BestNeural-{best_score}Score.pkl", "wb") as f:
                 # Save the list of top 5 networks
                 pickle.dump(genetic_algo.networks, f)
     print(f"Best score: {best_score}")
