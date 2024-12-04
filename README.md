@@ -54,9 +54,18 @@ We've included a Makefile to simplify running the pre-trained models, to run our
    ```
 
 3. Run whichever model you want to see:
+   Genetic:
    ```bash
    make genetic  # Runs the pre-trained genetic algorithm
+   OR
+   python3 geneticAlgorithm.py
+   ```
+
+   DeepQN
+   ```bash
    make dqn      # Runs the pre-trained Q-learning model
+   OR
+   python3 deepQLearning.py
    ```
 
 ## Model and Training Details
